@@ -1,0 +1,10 @@
+{
+    "require": {
+        "zendframework/zend-http": "^2.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    }
+}

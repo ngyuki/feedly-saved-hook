@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  app:
+    image: php
+    environment:
+      TZ: Asia/Tokyo
+      APP_CACHE_DIR: /data
+      FEEDLY_CLIENT_ID: ~
+      FEEDLY_CLIENT_SECRET: ~
+      POST_TARGET_URL: ~
+      POST_FIELD_NAME: ~
+    working_dir: /app
+    volumes:
+      - .:/app
+      - data:/data
+    command: php script/main.php
+
+volumes:
+  data:
