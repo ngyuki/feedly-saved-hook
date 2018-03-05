@@ -131,6 +131,7 @@ class Application
         $client->setAccessToken($access_token);
         $client->setParameterGet([
             'streamId' => "user/{$user_id}/tag/global.saved",
+            'ranked' => 'oldest',
         ]);
 
         return $client->safeRequestAsJson();
