@@ -18,7 +18,7 @@ sudo /usr/local/bin/docker-compose run --rm app
 ```sh
 cat <<EOS | sudo tee /etc/cron.d/feedly-saved-hook
 PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin
-*/10 * * * * root cd "$PWD" && docker-compose run --rm app | logger -t feedly-saved-hook
+*/10 * * * * root cd "$PWD" && chronic mispipe 'docker-compose run --rm app' 'logger -st feedly'
 EOS
 
 sudo systemctl reload crond
