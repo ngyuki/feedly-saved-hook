@@ -5,7 +5,7 @@ services:
     image: php
     environment:
       TZ: Asia/Tokyo
-      APP_CACHE_DIR: /data
+      APP_CACHE_DIR: /app/data
       FEEDLY_CLIENT_ID: ~
       FEEDLY_CLIENT_SECRET: ~
       POST_TARGET_URL: ~
@@ -13,8 +13,4 @@ services:
     working_dir: /app
     volumes:
       - .:/app
-      - data:/data
     command: php script/main.php
-
-volumes:
-  data:
