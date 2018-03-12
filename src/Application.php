@@ -122,7 +122,9 @@ class Application
             'refresh_token' => $refresh_token,
         ]);
 
-        return $client->safeRequestAsJson();
+        $data = $client->safeRequestAsJson();
+        $data['refresh_token'] = $refresh_token;
+        return $data;
     }
 
     public function fetch_saved_entries(string $access_token, string $user_id)
