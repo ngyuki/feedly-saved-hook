@@ -147,7 +147,6 @@ class Application
 
     public function unsaved_entries(string $access_token, array $entries)
     {
-        $r = new Request();
         $client = new HttpClient('http://cloud.feedly.com/v3/markers');
         $client->setMethod(Request::METHOD_POST);
         $client->setAccessToken($access_token);
