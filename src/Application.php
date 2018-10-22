@@ -141,10 +141,28 @@ class Application
 
     public function filter_entries_response(array $entries)
     {
-        return array_reduce($entries['items'], function ($r, $item) {
-            $r[$item['id']] = $item['originId'];
-            return $r;
-        }, []);
+        $entries = array_column($entries['items'], null, 'id');
+
+        return array_map(function ($item) {
+            if (isset($item['canonicalUrl'])) {
+                return $item['canonicalUrl'];
+            }
+            if (isset($item['canonical'])) {
+                foreach ((array)$item['canonical'] as $canonical) {
+                    if (isset($canonical['href'])) {
+                        return $canonical['href'];
+                    }
+                }
+            }
+            if (isset($item['alternate'])) {
+                foreach ((array)$item['alternate'] as $canonical) {
+                    if (isset($canonical['href'])) {
+                        return $canonical['href'];
+                    }
+                }
+            }
+            return $item['originId'];
+        }, $entries);
     }
 
     public function unsaved_entries(string $access_token, array $entries)
