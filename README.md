@@ -1,27 +1,29 @@
 # feedly-saved-hook
 
 ```sh
-ssh -L 8080:127.0.0.1:1234 remote-server
+# Docker ホストを環境変数で指定
+export DOCKER_HOST=ssh://$MY_REMOTE_SERVER
 
-git clone git@github.com:ngyuki/feedly-saved-hook.git
-cd feedly-saved-hook
+# コンテナを開始
+docker-compose build
+docker-compose up -d
 
-sudo /usr/local/bin/docker-compose run --rm -p 1234:1234 app php -S 0.0.0.0:1234 -t script/
-```
+# コンテナのい IP アドレスを確認
+docker inspect feedly-saved-hook | jq '.[].NetworkSettings.Networks[].IPAddress' -r
 
-Open http://localhost:8080/ in browser.
+# ホストにログインしつつコンテナで Web サーバを実行しつつポートフォワード
+ssh -L 8080:172.20.0.2:8080 -t "$MY_REMOTE_SERVER" \
+    docker exec feedly-saved-hook php -S 0.0.0.0:8080 -t script/
 
-```sh
-sudo /usr/local/bin/docker-compose run --rm app
-```
+# ブラウザで http://localhost:8080/ を開くと Feedly の OAuth 認証になるので認証を済ます
+open http://localhost:8080/
 
-```sh
-cat <<EOS | sudo tee /etc/cron.d/feedly-saved-hook
-PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin
-*/10 * * * * root cd "$PWD" && chronic mispipe 'docker-compose run --rm app' 'logger -st feedly'
-EOS
+# 認証が終わったら↑のポートフォワードと Web サーバは停止する
 
-sudo systemctl reload crond
+# cron にバッチを仕込む
+echo "*/10 * * * * root chronic mispipe 'docker exec feedly-saved-hook php script/main.php' 'logger -st feedly'" |
+  ssh "$MY_REMOTE_SERVER" sudo tee /etc/cron.d/feedly-saved-hook
+ssh "$MY_REMOTE_SERVER" sudo systemctl reload crond
 ```
 
 ## link

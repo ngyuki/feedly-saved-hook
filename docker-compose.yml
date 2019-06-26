@@ -2,7 +2,9 @@ version: '3'
 
 services:
   app:
-    image: php:7.2-alpine
+    build: .
+    image: feedly-saved-hook
+    container_name: feedly-saved-hook
     environment:
       TZ: Asia/Tokyo
       APP_CACHE_DIR: /app/data
@@ -10,7 +12,8 @@ services:
       FEEDLY_CLIENT_SECRET: ~
       POST_TARGET_URL: ~
       POST_FIELD_NAME: ~
-    working_dir: /app
     volumes:
-      - .:/app
-    command: php script/main.php
+      - data:/app/data
+
+volumes:
+  data:
