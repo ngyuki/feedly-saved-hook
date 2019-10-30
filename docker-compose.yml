@@ -5,6 +5,7 @@ services:
     build: .
     image: feedly-saved-hook
     container_name: feedly-saved-hook
+    restart: always
     environment:
       TZ: Asia/Tokyo
       APP_CACHE_DIR: /app/data
