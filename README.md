@@ -8,17 +8,19 @@ export DOCKER_HOST=ssh://$MY_REMOTE_SERVER
 docker-compose build
 docker-compose up -d
 
-# コンテナのい IP アドレスを確認
+# コンテナの IP アドレスを確認
 docker inspect feedly-saved-hook | jq '.[].NetworkSettings.Networks[].IPAddress' -r
 
 # ホストにログインしつつコンテナで Web サーバを実行しつつポートフォワード
-ssh -L 8080:172.20.0.2:8080 -t "$MY_REMOTE_SERVER" \
-    docker exec feedly-saved-hook php -S 0.0.0.0:8080 -t script/
+ssh -L 8080:172.21.0.2:8080 -N "$MY_REMOTE_SERVER"
 
 # ブラウザで http://localhost:8080/ を開くと Feedly の OAuth 認証になるので認証を済ます
 open http://localhost:8080/
 
-# 認証が終わったら↑のポートフォワードと Web サーバは停止する
+# 認証が終わったら↑のポートフォワードは停止する
+
+# 動作確認
+ssh "$MY_REMOTE_SERVER" docker exec feedly-saved-hook php script/main.php
 
 # cron にバッチを仕込む
 echo "*/10 * * * * root chronic mispipe 'docker exec feedly-saved-hook php script/main.php' 'logger -st feedly'" |

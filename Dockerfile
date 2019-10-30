@@ -16,7 +16,8 @@ ENV TZ=Asia/Tokyo \
 EXPOSE 8080
 VOLUME /app/data
 
-CMD [ "tail", "-f", "/dev/null" ]
+CMD [ "php", "-S", "0.0.0.0:8080", "-t", "public/" ]
 
+COPY public/ /app/public/
 COPY script/ /app/script/
 COPY src/    /app/src/
